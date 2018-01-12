@@ -1,6 +1,8 @@
 package com.gdrcu.test;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,6 +14,38 @@ import org.junit.Test;
 
 public class SocketClient {
 
+	
+	public String readMsgFromFile(){
+		File f = new File("D:/workspace_octopus/octopus-parent/octopus-consumer/src/test/resources/303300001606.txt");
+		StringBuffer sb = new StringBuffer();
+		 BufferedReader reader = null;  
+	        try {  
+	           
+	            reader = new BufferedReader(new FileReader(f));  
+	            String tempString = null;  
+	            int line = 1;  
+	            // 一次读入一行，直到读入null为文件结束  
+	            while ((tempString = reader.readLine()) != null) {  
+	                // 显示行号  
+	               sb.append(tempString);
+	                line++;  
+	            }  
+	            reader.close();  
+	        } catch (IOException e) {  
+	            e.printStackTrace();  
+	        } finally {  
+	            if (reader != null) {  
+	                try {  
+	                    reader.close();  
+	                } catch (IOException e1) {  
+	                }  
+	            }  
+	        }  
+	        
+	        return sb.toString();
+		
+	}
+	
 	@Test
 	public void testclient() {
 		Socket client = null;
@@ -21,8 +55,9 @@ public class SocketClient {
 			client = new Socket("localhost", 7989);
 
 			writer = new OutputStreamWriter(client.getOutputStream());
-			writer.write("Hello Server.");
-			writer.write("eof\n");
+			
+			writer.write(readMsgFromFile());
+			
 			writer.flush();
 
 			is = new BufferedReader(new InputStreamReader(client.getInputStream()));

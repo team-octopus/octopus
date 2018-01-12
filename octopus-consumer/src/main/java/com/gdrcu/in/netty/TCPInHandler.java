@@ -15,11 +15,13 @@ import com.gdrcu.common.XpathMessageObject;
 import com.gdrcu.common.utils.TransUtil;
 import com.gdrcu.exception.OctBaseException;
 import com.gdrcu.exception.OctErrorCode;
-import com.gdrcu.factory.OctBeanFactory;
+import com.gdrcu.factory.ApplicationContextAdapter;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 
+@Sharable
 public class TCPInHandler extends AbstractNettyHandler {
 	
 	private Logger logger =  LoggerFactory.getLogger(TCPInHandler.class);
@@ -102,7 +104,7 @@ public class TCPInHandler extends AbstractNettyHandler {
 		// 根据服务码获取对应的接口bean
 		
 			
-			Object bean = OctBeanFactory.getBean(serviceCode);
+			Object bean = ApplicationContextAdapter.getBean(serviceCode);
 			if (bean != null) {
 				// 创建参数数组，用于封闭请求数据
 				Object[] param = new Object[1];

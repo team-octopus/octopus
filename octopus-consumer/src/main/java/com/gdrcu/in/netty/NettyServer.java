@@ -1,4 +1,6 @@
-package com.gdrcu.consumer.netty;
+package com.gdrcu.in.netty;
+
+import com.gdrcu.server.OctTcpInServer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -13,22 +15,25 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 /**
  * 启动netty服务
  * 
- * @author Administrator
+ *
  *
  */
-public class InServer {
+public class NettyServer {
 	private int port;
-	private String encode;
 	ChannelFuture f;
 	EventLoopGroup bossGroup;
 	EventLoopGroup workerGroup;
 
-	public InServer(int port,String encode) {
+	
+	
+	public NettyServer(int port,OctTcpInServer.Model model) {
 		this.port = port;
-		this.encode = encode;
+		
 	}
+	
+	
 
-	public void run() throws Exception {
+	public void start(final AbstractNettyHandler handler) throws InterruptedException {
 		// 创建NioEventLoopGroup线程池
 		bossGroup = new NioEventLoopGroup();//
 		workerGroup = new NioEventLoopGroup();//默认是 CPU 核心数乘以2
@@ -40,7 +45,7 @@ public class InServer {
 			protected void initChannel(SocketChannel arg0) throws Exception {
 				// TODO Auto-generated method stub
 				arg0.pipeline().addLast(new ObjectEncoder());
-				arg0.pipeline().addLast(new InHandler(encode));
+				arg0.pipeline().addLast(handler);
 			}
 				
 		}).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
@@ -49,23 +54,13 @@ public class InServer {
 	}
 	
 	public void stop() throws InterruptedException{
+	if(null != workerGroup)
 		workerGroup.shutdownGracefully();
+	if(null != bossGroup)
 		bossGroup.shutdownGracefully();
+	if(null != f)
 		f.channel().closeFuture().sync();
 	}
 	
-	public static void main(String[] args) throws Exception{
-		System.out.println("start  InServer ...");
-		int port;
-		if (args.length > 1) {
-			port = Integer.parseInt(args[0]);
-		}else{
-			port = 8080;
-		}
-		System.out.println("port:-----1: "+port);
-		InServer s = new InServer(port,"utf-8");
-		System.out.println("port:-----2: "+port);
-		s.run();
-		System.out.println("over InServer ...");
-	}
+	
 }

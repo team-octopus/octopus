@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import javax.swing.text.AbstractDocument.Content;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
@@ -12,10 +14,10 @@ import com.gdrcu.OctContext;
 import com.gdrcu.common.IMessageObject;
 import com.gdrcu.common.IOctBaseService;
 import com.gdrcu.common.XpathMessageObject;
-import com.gdrcu.common.utils.TransUtil;
 import com.gdrcu.exception.OctBaseException;
 import com.gdrcu.exception.OctErrorCode;
-import com.gdrcu.factory.ApplicationContextAdapter;
+import com.gdrcu.utils.SpringContextUtil;
+import com.gdrcu.utils.TransUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -53,9 +55,9 @@ public class TCPInHandler extends AbstractNettyHandler {
 		// TODO Auto-generated method stub
 		byte[] bytes = new byte[arg1.readableBytes()];
 		arg1.readBytes(bytes);
-		String ar1Str;
+		String msg;
 		try {
-			ar1Str = new String(bytes, encode);
+			msg = new String(bytes, encode);
 		} catch (UnsupportedEncodingException e) {
 			
 			logger.error("error",e);
@@ -63,14 +65,16 @@ public class TCPInHandler extends AbstractNettyHandler {
 			
 		}
 		
+		logger.info("received msg:{}",msg);
+		
 		OctContext ctx = new OctContext();
 		ctx.setChannalName(this.channel);
 		
 		ctx.setReceiveDate(new Date());
-		ctx.setReceiveMsg(bytes);
+		ctx.setReceiveMsg(msg);
 		
 		
-		IMessageObject obj = new XpathMessageObject();
+		IMessageObject obj = null;
 		
 		
 		
@@ -96,7 +100,7 @@ public class TCPInHandler extends AbstractNettyHandler {
 		// 定义交易码，用于请求报文进行判断用，如果请求报文中包含这个交易码则说明注册了并可用，否则不可用
 		// 在往后开发中会将交易码配置到配置文件中
 		
-		String tranCode = ar1Str.substring(0, 13);
+		String tranCode = ctx.getTranCode();
 		// 创建服务标识 S + tranCode形式，目前通过TransUtil builderServiceName来创建
 		// 工具类统一放common了项目中
 		String serviceCode = TransUtil.buildServiceName(tranCode);
@@ -104,11 +108,11 @@ public class TCPInHandler extends AbstractNettyHandler {
 		// 根据服务码获取对应的接口bean
 		
 			
-			Object bean = ApplicationContextAdapter.getBean(serviceCode);
+			Object bean = SpringContextUtil.getBean(serviceCode);
 			if (bean != null) {
 				// 创建参数数组，用于封闭请求数据
 				Object[] param = new Object[1];
-				param[0] = ar1Str;
+				param[0] = msg;
 				// 通过反射获取接口的通讯方法并调用
 				Method method = ReflectionUtils.findMethod(bean.getClass(), "doSend", String.class);
 				//获取返回数据

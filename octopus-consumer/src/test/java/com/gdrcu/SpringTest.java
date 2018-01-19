@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 import com.gdrcu.exception.OctBaseException;
-import com.gdrcu.factory.ApplicationContextAdapter;
 import com.gdrcu.server.OctTcpInServer;
+import com.gdrcu.utils.SpringContextUtil;
 
 
 @ImportResource({  "classpath:spring.xml" })
@@ -25,7 +25,7 @@ public class SpringTest {
         
         
         
-        OctTcpInServer server = (OctTcpInServer) ApplicationContextAdapter.getBean("octinserver");
+        OctTcpInServer server = (OctTcpInServer) SpringContextUtil.getBean("octinserver");
         try {
 			server.start();
 		} catch (OctBaseException e) {

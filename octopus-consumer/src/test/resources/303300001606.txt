@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<service xmlns="http://www.w3cschool.com.cn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3cschool.com.cn /home/esb/SmartESB/bin/../configs/xsd/3003300001606.xsd">
-<SYS_HEAD>
-<SvcCd>30033000016</SvcCd>
-<SvcScn>06</SvcScn>
+<service xmlns="http://www.w3cschool.com.cn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3cschool.com.cn">
+<SYS_HEAD><SvcCd>30033000016</SvcCd><SvcScn>06</SvcScn>
 <SvcVer>V001</SvcVer>
 <CnsmrId>101010</CnsmrId>
 <CnsmrSeqNo>10101010015528</CnsmrSeqNo>

@@ -12,6 +12,8 @@ import java.net.UnknownHostException;
 
 import org.junit.Test;
 
+import com.gdrcu.utils.StringUtil;
+
 public class SocketClient {
 
 	
@@ -55,8 +57,13 @@ public class SocketClient {
 			client = new Socket("localhost", 7989);
 
 			writer = new OutputStreamWriter(client.getOutputStream());
+			String msg = readMsgFromFile();
 			
-			writer.write(readMsgFromFile());
+			msg = StringUtil.len2FixStr(msg.length(), 5)+msg;
+			
+			
+			
+			writer.write(msg);
 			
 			writer.flush();
 

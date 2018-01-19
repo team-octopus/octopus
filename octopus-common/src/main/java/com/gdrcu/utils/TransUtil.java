@@ -1,4 +1,4 @@
-package com.gdrcu.common.utils;
+package com.gdrcu.utils;
 
 /**
  * TransUtil 作为处理交易码的工具类

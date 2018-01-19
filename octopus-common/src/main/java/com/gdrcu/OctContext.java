@@ -7,10 +7,28 @@ public class OctContext {
 	String innerUUID;//内部UUID
 	Date receiveDate;//接收时间
 	
-	byte[] receiveMsg;
+	String  receiveMsg;//转换成应用内部编码字符串
+	
+	String tranCode ;//报文上送的交易码
 	
 	
 	
+
+	public String getTranCode() {
+		return tranCode;
+	}
+
+	public void setTranCode(String tranCode) {
+		this.tranCode = tranCode;
+	}
+
+	public String getReceiveMsg() {
+		return receiveMsg;
+	}
+
+	public void setReceiveMsg(String receiveMsg) {
+		this.receiveMsg = receiveMsg;
+	}
 
 	public String getChannalName() {
 		return channalName;
@@ -44,14 +62,6 @@ public class OctContext {
 		this.receiveDate = receiveDate;
 	}
 
-	public byte[] getReceiveMsg() {
-		return receiveMsg;
-	}
-
-	public void setReceiveMsg(byte[] receiveMsg) {
-		this.receiveMsg = receiveMsg;
-	}
-	
 	
 	
 	

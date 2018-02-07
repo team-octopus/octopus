@@ -71,7 +71,11 @@ public class MessageParserService extends AbstractOctBaseService{
 			
 			String codeBefore = null;
 			String codeAfter = null;
-			if(null == xmlns)
+			
+			
+			codeBefore = msgObj.getValue("/service/SYS_HEAD/SvcCd");
+			codeAfter = msgObj.getValue("/service/SYS_HEAD/SvcScn");
+		/*	if(null == xmlns)
 			{
 				
 				codeBefore = doc.selectSingleNode("//service/SYS_HEAD/SvcCd").getText();
@@ -93,7 +97,7 @@ public class MessageParserService extends AbstractOctBaseService{
 				codeAfter = x1.selectSingleNode(doc).getText();
 				
 			}
-			
+			*/
 			
 			
 			

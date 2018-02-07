@@ -1,5 +1,10 @@
 package com.octopus.consumer;
 
+import org.dom4j.DocumentException;
+
+import com.gdrcu.common.XpathMessageObject;
+import com.gdrcu.exception.OctBaseException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -30,9 +35,20 @@ public class AppTest
 
     /**
      * Rigourous Test :-)
+     * @throws OctBaseException 
      */
-    public void testApp()
+    public void testApp() throws OctBaseException
     {
-        assertTrue( true );
+       
+    	try {
+    		
+			XpathMessageObject obj = (XpathMessageObject) new XpathMessageObject().with("<service xmlns=\"http://www.w3cschool.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.w3cschool.com.cn\"><s atr=\"atr\">a</s></service>");
+			
+			System.out.println(obj.getValue("/service/s[@atr='atr']"));
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
     }
 }

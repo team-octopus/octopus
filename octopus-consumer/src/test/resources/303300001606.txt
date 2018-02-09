@@ -12,14 +12,14 @@
 <OrigCnsmrSeqNo>10101010015528</OrigCnsmrSeqNo>
 <OrigTxnDt>20180112</OrigTxnDt>
 <OrigTxnTm>092858</OrigTxnTm>
-<TxnMd>ONLINE</TxnMd>
+<TxnMd>中文</TxnMd>
 <UsrLng/>
 <MacNode/>
 <MacValue/>
 </SYS_HEAD>
 <APP_HEAD>
 <TlrNo>7001763</TlrNo>
-<BrId>00101</BrId>
+<BrId>中文测似乎</BrId>
 </APP_HEAD>
 <BODY>
 <BizOrgCd>99</BizOrgCd>

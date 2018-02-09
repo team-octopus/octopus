@@ -24,6 +24,13 @@ public class NettyServer {
 	EventLoopGroup bossGroup;
 	EventLoopGroup workerGroup;
 
+	/*
+	*//**用于分配处理业务线程的线程组个数 *//*
+	protected static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors()*2;	//默认
+	*//** 业务出现线程大小*//*
+	protected static final int BIZTHREADSIZE = 1000;
+	private static final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZGROUPSIZE);
+	private static final EventLoopGroup workerGroup = new NioEventLoopGroup(BIZTHREADSIZE);*/
 	
 	
 	public NettyServer(int port,OctTcpInServer.Model model) {
@@ -35,6 +42,9 @@ public class NettyServer {
 
 	public void start(final AbstractNettyHandler handler) throws InterruptedException {
 		// 创建NioEventLoopGroup线程池
+		
+		
+		
 		bossGroup = new NioEventLoopGroup();//
 		workerGroup = new NioEventLoopGroup();//默认是 CPU 核心数乘以2
 		ServerBootstrap b = new ServerBootstrap();//ServerBootstrap.bind(int)负责绑定端口,可以绑定多个端口

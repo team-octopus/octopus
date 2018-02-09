@@ -14,6 +14,9 @@ import org.junit.Test;
 
 import com.gdrcu.utils.StringUtil;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 public class SocketClient {
 
 	
@@ -45,6 +48,22 @@ public class SocketClient {
 	        }  
 	        
 	        return sb.toString();
+		
+	}
+	@Test
+	public void tst1(){
+		TcpClient client  = new TcpClient();
+		
+		String msg = readMsgFromFile();
+		
+		msg = StringUtil.len2FixStr(msg.length(), 5)+msg;
+		try {
+			ByteBuf bbuffer = Unpooled.copiedBuffer(msg.getBytes("utf-8"));
+			client.sendMsg(client.getChannel("localhost", 7989), bbuffer);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

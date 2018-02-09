@@ -1,7 +1,15 @@
 package com.gdrcu.utils;
 
+import java.io.UnsupportedEncodingException;
+
 public class StringUtil {
 
+	
+	public static byte[] changeEncode(String msg,String encode) throws UnsupportedEncodingException{
+		
+		return new String(msg.getBytes(), encode).getBytes();
+	}
+	
 	public static boolean isEmpty(String in) {
 
 		return in == null || in.equals("") ? true : false;

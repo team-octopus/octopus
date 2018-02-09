@@ -1,6 +1,7 @@
 package com.gdrcu.utils;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -38,8 +39,10 @@ public class SpringContextUtil implements ApplicationContextAware {
 	 * @param name
 	 * @return
 	 */
-	public static Object getBean(String name) {
+	public static Object getBean(String name) throws NoSuchBeanDefinitionException{
+		
 		return getApplicationContext().getBean(name);
+		
 	}
 
 	/**

@@ -12,16 +12,25 @@ import com.gdrcu.common.IMessageObject;
 public class ExceptionHandler {
 
 	
-	public String sendException(IMessageObject obj,OctContext ctx,OctBaseException e){
+	
+
+	
+	public static String buildExceptionMsg(IMessageObject obj,OctContext ctx,OctBaseException e) throws OctBaseException{
+		
 		
 		//取得头部
-		
+		StringBuilder returnSb = new StringBuilder("<SYS_HEAD>");
+		returnSb.append(obj.getValue("/service/SYS_HEAD"));
+		returnSb.append("</SYS_HEAD>");
+		 
 		//根据错误拼装body
 		
 		
 		
 		
-		return null;
+		
+		
+		return returnSb.toString();
 	}
 	
 }

@@ -61,7 +61,7 @@ public class MessageParserService extends AbstractOctBaseService{
 		 try {
 			Document doc =  DocumentHelper.parseText(body);
 			
-			msgObj  =  new XpathMessageObject().with(doc); 
+			msgObj  =  msgObj.with(doc); 
 			
 			StringBuilder sb = new StringBuilder();
 			

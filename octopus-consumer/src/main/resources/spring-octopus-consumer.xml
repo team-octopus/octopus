@@ -4,15 +4,16 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
-	<!-- 测试集成spring -->
-	<bean id="demo" class="com.gdrcu.consumer.demo.Demo">
-		<property name="str" value="Hello World!" />
-	</bean>
+	
 	<!-- 添加dubbo -->
 	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样即可 -->
 	<dubbo:application name="octopus-consumer" />
 	<!-- 使用本地注册服务地址 -->
-	<dubbo:registry protocol="zookeeper" address="zookeeper://192.168.79.1:2181" />
+	<dubbo:registry protocol="zookeeper" address="zookeeper://127.0.0.1:2181" />
+	
+	
+	
+	
 	<!-- 生成远程服务代理，可以和本地bean一样使用S2001300000205 -->
 	<dubbo:reference id="S2001300000205" check="false"
 		interface="com.gdrcu.api.service.inter.S2001300000205" />
@@ -23,7 +24,7 @@ http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubb
 		value="10980" /> <constructor-arg value="GBK" /> </bean> <bean id="inServer01" 
 		class="com.gdrcu.consumer.netty.InServer01"> <constructor-arg value="10983" 
 		/> <constructor-arg value="GBK" /> </bean> -->
-	<import resource="consumer-request-ip.xml" />
+	
 	<!-- 注入获取bean的工具类 -->
-	<bean id="springContextUtil" class="com.gdrcu.common.utils.SpringContextUtil" />
+	<bean id="springContextUtil" class="com.gdrcu.utils.SpringContextUtil" />
 </beans>

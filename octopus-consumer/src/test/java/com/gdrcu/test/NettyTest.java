@@ -14,13 +14,13 @@ public class NettyTest {
 	
 	public static void main(String [] args){
 		
-		testNetty();
+		
 	}
 	
 	
 	
 	@Test
-	public static void testNetty(){
+	public  void testNetty(){
 		
 		OctTcpInServer server  = new OctTcpInServer("tst", 6090, "utf-8");
 		try {

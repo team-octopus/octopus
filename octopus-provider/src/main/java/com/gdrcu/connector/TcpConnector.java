@@ -18,9 +18,19 @@ public class TcpConnector implements IConnector{
 		
 	}
 	
+	
+	
 	@Override
 	public void send(String msg) throws OctBaseException {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void connect() throws OctBaseException {
+		
 		
 	}
 	

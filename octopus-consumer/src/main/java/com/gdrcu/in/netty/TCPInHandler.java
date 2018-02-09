@@ -24,6 +24,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.util.ReferenceCountUtil;
 import io.netty.channel.ChannelHandlerContext;
 
 @Sharable
@@ -52,9 +53,9 @@ public class TCPInHandler extends AbstractNettyHandler {
 	private void send(ChannelHandlerContext arg0, String msg) {
 
 		try {
-		
-			logger.info("send msg :{}",msg);
+
 			ByteBuf bbuffer = Unpooled.copiedBuffer(StringUtil.changeEncode(msg, encode));
+			// 短连接
 			arg0.channel().writeAndFlush(bbuffer).addListener(ChannelFutureListener.CLOSE);
 
 		} catch (UnsupportedEncodingException e1) {
@@ -74,9 +75,10 @@ public class TCPInHandler extends AbstractNettyHandler {
 		} catch (UnsupportedEncodingException e) {
 
 			logger.error("error", e);
-
+			ReferenceCountUtil.release(arg1);
+			
 			throw new OctBaseException(e, OctBaseException.Level.I, OctErrorCode.INNER_ERROR_CODE);
-
+			
 		}
 
 		logger.info("received msg:{}", msg);
@@ -103,6 +105,7 @@ public class TCPInHandler extends AbstractNettyHandler {
 			// 返回错误给前台
 			String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx, e);
 			this.send(arg0, errorMsg);
+			ReferenceCountUtil.release(arg1);
 			return;
 
 		}
@@ -126,6 +129,7 @@ public class TCPInHandler extends AbstractNettyHandler {
 			String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx,
 					new OctBaseException(e, OctBaseException.Level.I, OctErrorCode.TRANCODE_NOT_EXIST));
 			this.send(arg0, errorMsg);
+			ReferenceCountUtil.release(arg1);
 
 			return;
 
@@ -139,34 +143,24 @@ public class TCPInHandler extends AbstractNettyHandler {
 			// 获取返回数据
 			Object resp = ReflectionUtils.invokeMethod(method, bean, param);
 			// 写出时不能用 new String(s.getBytes,"gbk");的形式转码，没效果
-			try {
-				arg0.channel().writeAndFlush(resp.toString().getBytes(encode));
-			} catch (UnsupportedEncodingException e) {
 
-				logger.error("error", e);
+			this.send(arg0, resp.toString());
+			// arg0.channel().writeAndFlush(resp.toString().getBytes(encode));
 
-				String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx,
-						new OctBaseException(e, OctBaseException.Level.I, OctErrorCode.INNER_ERROR_CODE));
-				this.send(arg0, errorMsg);
-				return;
-			}
 		} else {
 			// 如果为空，返回前端找不到交易码错误
 
 			return;
 		}
+		ReferenceCountUtil.release(arg1);
 
 	}
-	
-
-	
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-			logger.warn("Unexpected exception from downstream.", cause);
-			ctx.close();
-		
-	}
+		logger.warn("Unexpected exception from downstream.", cause);
+		ctx.close();
 
+	}
 
 }

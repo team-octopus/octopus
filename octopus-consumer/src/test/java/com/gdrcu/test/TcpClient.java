@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -64,27 +63,6 @@ public class TcpClient {
 		}
 	}
 
-    public static void main(String[] args) throws Exception {
-		try {
-			long t0 = System.nanoTime();
-			byte[] value = null;
-			Channel channel = null;
-			for (int i = 0; i < 50000; i++) {
-				channel = getChannel(HOST, PORT);
-				value = (i+",你好").getBytes();
-				ByteBufAllocator alloc = channel.alloc();
-				ByteBuf buf = alloc.buffer(value.length);
-				buf.writeBytes(value);
-				TcpClient.sendMsg(channel,buf);
-			}
-			long t1 = System.nanoTime();
-			System.out.println((t1-t0)/1000000.0);
-			Thread.sleep(5000);
-			System.exit(0);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-    }
+    
 }

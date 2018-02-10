@@ -1,8 +1,9 @@
 package com.gdrcu.in.netty;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.net.InetSocketAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +11,14 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.util.ReflectionUtils;
 
 import com.gdrcu.OctContext;
+import com.gdrcu.api.InvokeResult;
 import com.gdrcu.common.IMessageObject;
 import com.gdrcu.common.IOctBaseService;
 import com.gdrcu.common.XpathMessageObject;
 import com.gdrcu.exception.ExceptionHandler;
 import com.gdrcu.exception.OctBaseException;
 import com.gdrcu.exception.OctErrorCode;
+import com.gdrcu.utils.DateUtil;
 import com.gdrcu.utils.SpringContextUtil;
 import com.gdrcu.utils.StringUtil;
 import com.gdrcu.utils.TransUtil;
@@ -24,7 +27,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.util.ReferenceCountUtil;
 import io.netty.channel.ChannelHandlerContext;
 
 @Sharable
@@ -57,16 +59,25 @@ public class TCPInHandler extends AbstractNettyHandler {
 			ByteBuf bbuffer = Unpooled.copiedBuffer(StringUtil.changeEncode(msg, encode));
 			// 短连接
 			arg0.channel().writeAndFlush(bbuffer).addListener(ChannelFutureListener.CLOSE);
-
+			
+			
+			
 		} catch (UnsupportedEncodingException e1) {
 
 			logger.error("error", e1);
 		}
 	}
+	
+	private String getIp(ChannelHandlerContext ctx){
+		
+		InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        return  insocket.getAddress().getHostAddress();
+        
+	}
 
 	@Override
 	public void channelRead0(ChannelHandlerContext arg0, ByteBuf arg1) throws OctBaseException {
-		// TODO Auto-generated method stub
+		
 		byte[] bytes = new byte[arg1.readableBytes()];
 		arg1.readBytes(bytes);
 		String msg;
@@ -75,18 +86,18 @@ public class TCPInHandler extends AbstractNettyHandler {
 		} catch (UnsupportedEncodingException e) {
 
 			logger.error("error", e);
-			ReferenceCountUtil.release(arg1);
+			
 			
 			throw new OctBaseException(e, OctBaseException.Level.I, OctErrorCode.INNER_ERROR_CODE);
 			
 		}
-
+		
 		logger.info("received msg:{}", msg);
 
 		OctContext ctx = new OctContext();
-		ctx.setChannalName(this.channel);
-
-		ctx.setReceiveDate(new Date());
+		ctx.setChannelName(this.channel);
+		ctx.setChannelIp(getIp(arg0));
+		ctx.setReceiveDate(DateUtil.getCurDate());
 		ctx.setReceiveMsg(msg);
 
 		IMessageObject obj = new XpathMessageObject();
@@ -105,7 +116,7 @@ public class TCPInHandler extends AbstractNettyHandler {
 			// 返回错误给前台
 			String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx, e);
 			this.send(arg0, errorMsg);
-			ReferenceCountUtil.release(arg1);
+			
 			return;
 
 		}
@@ -129,36 +140,64 @@ public class TCPInHandler extends AbstractNettyHandler {
 			String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx,
 					new OctBaseException(e, OctBaseException.Level.I, OctErrorCode.TRANCODE_NOT_EXIST));
 			this.send(arg0, errorMsg);
-			ReferenceCountUtil.release(arg1);
+			
 
 			return;
 
 		}
 		if (bean != null) {
 			// 创建参数数组，用于封闭请求数据
-			Object[] param = new Object[1];
+			Object[] param = new Object[2];
+			
 			param[0] = msg;
+			param[1] =ctx;
 			// 通过反射获取接口的通讯方法并调用
-			Method method = ReflectionUtils.findMethod(bean.getClass(), "doSend", String.class);
+			Method method = ReflectionUtils.findMethod(bean.getClass(), "doSend", String.class,OctContext.class);
+			
+			if(null == method){//表示该方法不存在，配置有问题
+				
+				
+				this.send(arg0, "内部配置错误，请联系管理员");
+				
+				return ;
+				
+			}
+			InvokeResult resp = null;
+			/*try {
+				 resp = 	(InvokeResult) method.invoke(bean, msg,ctx);
+			} catch (IllegalAccessException e) {
+				
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+			
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				
+				e.printStackTrace();
+			}*/
 			// 获取返回数据
-			Object resp = ReflectionUtils.invokeMethod(method, bean, param);
-			// 写出时不能用 new String(s.getBytes,"gbk");的形式转码，没效果
-
+			resp = (InvokeResult) ReflectionUtils.invokeMethod(method, bean, param);
+			
+			
+			 
+			logger.info("return ctx value:{}",ctx.getProviderName());
+			
 			this.send(arg0, resp.toString());
-			// arg0.channel().writeAndFlush(resp.toString().getBytes(encode));
+			
 
 		} else {
 			// 如果为空，返回前端找不到交易码错误
 
 			return;
 		}
-		ReferenceCountUtil.release(arg1);
+		
 
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.warn("Unexpected exception from downstream.", cause);
+		//logger.warn("Unexpected exception from downstream.", cause);
+		logger.error("error",cause);
 		ctx.close();
 
 	}

@@ -2,7 +2,9 @@ package com.gdrcu.server.adapter;
 
 
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;  
+import javax.servlet.ServletContextListener;
+
+import com.gdrcu.utils.SpringContextUtil;  
 
 /**
  * 负责启动netty进行监听
@@ -15,6 +17,8 @@ public class ServletContextListenerStartupAdapter implements ServletContextListe
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 			
+		
+		
 	}
 
 	@Override

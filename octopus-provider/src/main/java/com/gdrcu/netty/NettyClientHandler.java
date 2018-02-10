@@ -5,14 +5,15 @@ import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gdrcu.common.IOctBaseService;
 import com.gdrcu.exception.OctBaseException;
 import com.gdrcu.exception.OctErrorCode;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.util.ReferenceCountUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 
 @Sharable
 public class NettyClientHandler implements ChannelHandler {
@@ -21,7 +22,10 @@ public class NettyClientHandler implements ChannelHandler {
 	
 	private String encode;
 	
-	public NettyClientHandler(String encode){
+	
+	IOctBaseService service;
+	
+	public NettyClientHandler(String encode,IOctBaseService service){
 		this.encode = encode;
 	}
 	
@@ -44,6 +48,7 @@ public class NettyClientHandler implements ChannelHandler {
 				
 			}
 			logger.info("recieve msg from server :{}",msgStr);
+			
 			
 			
 			

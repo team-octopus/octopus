@@ -56,8 +56,9 @@ public class TcpClient {
 
 	public static void sendMsg(Channel channel,ByteBuf msg) throws Exception {
 		if(channel!=null){
-			
-			channel.writeAndFlush(msg).sync();
+			byte[] bytes = new byte[msg.readableBytes()];
+			msg.readBytes(bytes);
+			channel.writeAndFlush(new String(bytes)).sync();
 		}else{
 			logger.warn("消息发送失败,连接尚未建立!");
 		}

@@ -14,4 +14,12 @@ public class TransUtil {
 	public static String buildServiceName(String transCode){
 		return "S"+transCode;
 	}
+	/**
+	 * 取得原始服务码
+	 * @param transCode 交易码
+	 * @return  transCode; 返回服务码
+	 */
+	public static String unBuildServiceName(String transCode){
+		return transCode.substring(1);
+	}
 }

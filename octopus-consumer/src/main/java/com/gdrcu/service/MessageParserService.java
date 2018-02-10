@@ -20,115 +20,102 @@ import com.gdrcu.exception.OctBaseException.Level;
 import com.gdrcu.exception.OctErrorCode;
 
 @Service
-public class MessageParserService extends AbstractOctBaseService{
+public class MessageParserService extends AbstractOctBaseService {
 
-	private Logger logger =  LoggerFactory.getLogger(MessageParserService.class);
-	
-	private String parserRule ;
-	
-	
-	public MessageParserService(){
-		
+	private Logger logger = LoggerFactory.getLogger(MessageParserService.class);
+
+	private String parserRule;
+
+	public MessageParserService() {
+
 	}
-	
-	public void setRule(String rule){
+
+	public void setRule(String rule) {
 		this.parserRule = rule;
 	}
-	 
-	public void invoke(IMessageObject msgObj,OctContext ctx) throws OctBaseException {
-		
-		
+
+	public void invoke(IMessageObject msgObj, OctContext ctx) throws OctBaseException {
+
 		String data = ctx.getReceiveMsg();
-		
-		//假设报文前5位就是长度
+
+		// 假设报文前5位就是长度
 		String strLen = data.substring(0, 5);
-		
-		
-		//检查长度是否合理
-		int len = Integer.parseInt(strLen);
-		
-		
-		if(len > 0){
-			
-			
-			
-		}
-		
-		
-		String body = data.substring(5,data.length());
-		
-		logger.info("receive body:{}",body);
-		 try {
-			Document doc =  DocumentHelper.parseText(body);
-			
-			msgObj  =  msgObj.with(doc); 
-			
+
+		try {
+			// 检查长度是否合理
+			int len = Integer.parseInt(strLen);
+
+			if (len > 0) {
+
+			}
+
+			String body = data.substring(5, data.length());
+
+			logger.info("receive body:{}", body);
+
+			Document doc = DocumentHelper.parseText(body);
+
+			msgObj = msgObj.with(doc);
+
 			StringBuilder sb = new StringBuilder();
-			
-			//xmlns处理
-			
+
+			// xmlns处理
+
 			String xmlns = doc.getRootElement().getNamespaceURI();
-			
+
 			String codeBefore = null;
 			String codeAfter = null;
-			
-			
+
 			codeBefore = msgObj.getValue("/service/SYS_HEAD/SvcCd");
 			codeAfter = msgObj.getValue("/service/SYS_HEAD/SvcScn");
-		/*	if(null == xmlns)
-			{
-				
-				codeBefore = doc.selectSingleNode("//service/SYS_HEAD/SvcCd").getText();
-				codeAfter = doc.selectSingleNode("//service/SYS_HEAD/SvcScn").getText();
-				
-			}else{
-				String df = "df:";
-				
-				Map<String, String>nsMap=new HashMap<String, String>();  
-				nsMap.put("df",doc.getRootElement().getNamespaceURI());  
-				XPath x = doc.createXPath("//"+df+"service/"+df+"SYS_HEAD/"+df+"SvcCd");  
-			    x.setNamespaceURIs(nsMap);  
-			    
-			    XPath x1 = doc.createXPath("//"+df+"service/"+df+"SYS_HEAD/"+df+"SvcScn");  
-			    x1.setNamespaceURIs(nsMap);  
-				
-			
-				codeBefore = x.selectSingleNode(doc).getText();
-				codeAfter = x1.selectSingleNode(doc).getText();
-				
-			}
-			*/
-			
-			
-			
+			/*
+			 * if(null == xmlns) {
+			 * 
+			 * codeBefore =
+			 * doc.selectSingleNode("//service/SYS_HEAD/SvcCd").getText();
+			 * codeAfter =
+			 * doc.selectSingleNode("//service/SYS_HEAD/SvcScn").getText();
+			 * 
+			 * }else{ String df = "df:";
+			 * 
+			 * Map<String, String>nsMap=new HashMap<String, String>();
+			 * nsMap.put("df",doc.getRootElement().getNamespaceURI()); XPath x =
+			 * doc.createXPath("//"+df+"service/"+df+"SYS_HEAD/"+df+"SvcCd");
+			 * x.setNamespaceURIs(nsMap);
+			 * 
+			 * XPath x1 =
+			 * doc.createXPath("//"+df+"service/"+df+"SYS_HEAD/"+df+"SvcScn");
+			 * x1.setNamespaceURIs(nsMap);
+			 * 
+			 * 
+			 * codeBefore = x.selectSingleNode(doc).getText(); codeAfter =
+			 * x1.selectSingleNode(doc).getText();
+			 * 
+			 * }
+			 */
+
 			sb.append(codeBefore);
 			sb.append(codeAfter);
-			
+
 			ctx.setTranCode(sb.toString());
-			logger.info("receive trancode :{}",sb.toString());
-			
-			
+			logger.info("receive trancode :{}", sb.toString());
+
 		} catch (DocumentException e) {
-			
-			logger.error("error",e);
-			
-			
-			throw new OctBaseException(e,Level.II,OctErrorCode.INNER_ERROR_CODE);
+
+			logger.error("error", e);
+
+			throw new OctBaseException(e, Level.II, OctErrorCode.INNER_ERROR_CODE);
+		} catch (NumberFormatException e) {
+			logger.error("error", e);
+
+			throw new OctBaseException(e, Level.II, OctErrorCode.MESSAGE_FORMAT_ERROR);
 		}
-		 
-		
-		
-		
-		if(null != this.service){
-			
+
+		if (null != this.service) {
+
 			this.service.invoke(msgObj, ctx);
-			
+
 		}
 	}
 
-
-	
-
-
-	
 }

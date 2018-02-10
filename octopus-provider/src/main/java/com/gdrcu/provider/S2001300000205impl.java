@@ -6,23 +6,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.gdrcu.api.exception.BaseException;
-import com.gdrcu.api.service.inter.S2001300000205;
+import com.gdrcu.exception.OctBaseException;
 /**
  * 作为provider中的接口，负责与out端的通讯
  * @author Administrator
  *
  */
-public class S2001300000205impl implements S2001300000205 , Serializable{
+public class S2001300000205impl extends AbstractInterfaceImpl{
 
-	public String doSend(String msg) throws BaseException {
+	public String doSend(String msg) throws OctBaseException {
 		// TODO Auto-generated method stub
 		System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] Hello " + msg + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
 		//return可以用与out端通讯时接收到的响应信息来代替

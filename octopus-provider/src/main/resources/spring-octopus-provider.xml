@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
-	<dubbo:application name="edas-dubbo-demo-provider"></dubbo:application>
+	<dubbo:application name="octopus-provider"></dubbo:application>
 	
 	
 	<bean id="S2001300000106" class="com.gdrcu.provider.S2001300000106impl"></bean>
@@ -14,5 +14,14 @@ http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubb
 		interface="com.gdrcu.api.service.inter.S2001300000106" ref="S2001300000106"
 		version="1.0.0" group="diamond" retries="3" timeout="3000"></dubbo:service>
 		
+	<bean id="connectorBancs" class="com.gdrcu.connector.TcpShortConnector">
+		<constructor-arg value="BancsConnector" />
+		<constructor-arg value="127.0.0.1" />
+		<constructor-arg value="7999" />
+		<constructor-arg value="utf-8" />
+		<property name="factory" ref="connectorFactory" />
+		
+		
+	</bean>
 	<bean id='connectorFactory' class="com.gdrcu.connector.ConnectorFactory"></bean>
 </beans>

@@ -1,6 +1,8 @@
 package com.gdrcu.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtil {
 
@@ -8,6 +10,17 @@ public class StringUtil {
 	public static byte[] changeEncode(String msg,String encode) throws UnsupportedEncodingException{
 		
 		return new String(msg.getBytes(), encode).getBytes();
+	}
+	
+	
+	public static String replaceBlank(String str) {
+		String dest = "";
+		if (str!=null) {
+			Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+			Matcher m = p.matcher(str);
+			dest = m.replaceAll("");
+		}
+		return dest;
 	}
 	
 	public static boolean isEmpty(String in) {

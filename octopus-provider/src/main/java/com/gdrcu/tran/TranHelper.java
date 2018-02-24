@@ -6,6 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.gdrcu.connector.ConnectorFactory;
 import com.gdrcu.connector.IConnector;
 
+/**
+ * 
+ * 配置连接器与交易码之间的关系，启动时，需加载
+ * resources/configs/connector_trancode.xml
+ * key:trancode;
+ * value:connector_name
+ * 
+ * */
 public class TranHelper {
 	
 	
@@ -18,10 +26,13 @@ public class TranHelper {
 	}
 	
 	
+	
+	
 	public static IConnector getTranConnector(String trancode){
 		
+		return ConnectorFactory.getConnector("BancsConnector");
 	
-		return ConnectorFactory.getConnector(tranConnMap.get(trancode));
+		//return ConnectorFactory.getConnector(tranConnMap.get(trancode));
 	}
 	
 }

@@ -2,7 +2,7 @@ package com.gdrcu.api;
 
 import com.gdrcu.OctContext;
 
-public class InvokeResult {
+public class SendResult {
 
 	private boolean success;
 	

@@ -5,6 +5,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.gdrcu.utils.StringUtil;
 
+/**
+ * 
+ * 配置文件配置连接器与交易码之间的关系
+ * 
+ * 
+ * */
 public class ConnectorFactory {
 	private static Map<String, IConnector> connectorMap = new ConcurrentHashMap();
 	

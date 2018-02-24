@@ -1,12 +1,13 @@
 package com.gdrcu.service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
-import org.dom4j.XPath;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,10 @@ import org.springframework.stereotype.Service;
 import com.gdrcu.OctContext;
 import com.gdrcu.common.AbstractOctBaseService;
 import com.gdrcu.common.IMessageObject;
-import com.gdrcu.common.XpathMessageObject;
 import com.gdrcu.exception.OctBaseException;
 import com.gdrcu.exception.OctBaseException.Level;
 import com.gdrcu.exception.OctErrorCode;
+import com.gdrcu.utils.StringUtil;
 
 @Service
 public class MessageParserService extends AbstractOctBaseService {
@@ -54,14 +55,21 @@ public class MessageParserService extends AbstractOctBaseService {
 			logger.info("receive body:{}", body);
 
 			Document doc = DocumentHelper.parseText(body);
+			
 
 			msgObj = msgObj.with(doc);
+			
+			//logger.info("transfer:{}",StringUtil.replaceBlank(doc.asXML()));
 
 			StringBuilder sb = new StringBuilder();
 
 			// xmlns处理
 
 			String xmlns = doc.getRootElement().getNamespaceURI();
+			
+			//如果出现命名空间，则返回错误信息
+			
+			
 
 			String codeBefore = null;
 			String codeAfter = null;
@@ -116,6 +124,39 @@ public class MessageParserService extends AbstractOctBaseService {
 			this.service.invoke(msgObj, ctx);
 
 		}
+	}
+	private String asXml(Document document){
+	    OutputFormat format = new OutputFormat();
+	    
+	    
+	    // 设置换行 为false时输出的xml不分行
+	    format.setNewlines(false); 
+        // 生成缩进 
+	   // format.setIndent(true); 
+        // 指定使用tab键缩进
+	   // format.setIndent("  "); 
+        // 不在文件头生成  XML 声明 (<?xml version="1.0" encoding="UTF-8"?>) 
+	   // format.setSuppressDeclaration(true);
+        // 不在文件头生成  XML 声明 (<?xml version="1.0" encoding="UTF-8"?>)中加入encoding 属性
+	   // format.setOmitEncoding(true);
+	    
+	    format.setExpandEmptyElements(true);
+	    StringWriter out = new StringWriter();
+	    XMLWriter writer = new XMLWriter(out, format);
+	    try {
+	        writer.write(document);
+	        writer.flush();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }finally{
+	    	try {
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+	    return out.toString();
 	}
 
 }

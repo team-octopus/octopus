@@ -11,6 +11,8 @@ public class OctErrorCode {
 	
 	public static int MESSAGE_FORMAT_ERROR = 10004;//上送报文格式错误
 	
+	public static int TARGET_TRANCODE_NOT_EXIST=10005;//目标交易码不存在
+	
 	
 	
 }

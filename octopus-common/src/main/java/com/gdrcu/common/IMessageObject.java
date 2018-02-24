@@ -10,7 +10,7 @@ public interface IMessageObject {
 	
 	public void setValue(String xpath,String value) throws OctBaseException;
 
-	public IMessageObject with(Document doc);
+	public IMessageObject with(Document doc) throws OctBaseException;
 	
 	
 	

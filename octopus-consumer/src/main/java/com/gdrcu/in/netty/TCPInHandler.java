@@ -11,7 +11,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.util.ReflectionUtils;
 
 import com.gdrcu.OctContext;
-import com.gdrcu.api.InvokeResult;
+import com.gdrcu.api.SendResult;
 import com.gdrcu.common.IMessageObject;
 import com.gdrcu.common.IOctBaseService;
 import com.gdrcu.common.XpathMessageObject;
@@ -121,7 +121,6 @@ public class TCPInHandler extends AbstractNettyHandler {
 
 		}
 
-		logger.info("obj is null {}", obj == null);
 		// 定义交易码，用于请求报文进行判断用，如果请求报文中包含这个交易码则说明注册了并可用，否则不可用
 		// 在往后开发中会将交易码配置到配置文件中
 
@@ -162,7 +161,7 @@ public class TCPInHandler extends AbstractNettyHandler {
 				return ;
 				
 			}
-			InvokeResult resp = null;
+			SendResult resp = null;
 			/*try {
 				 resp = 	(InvokeResult) method.invoke(bean, msg,ctx);
 			} catch (IllegalAccessException e) {
@@ -175,19 +174,31 @@ public class TCPInHandler extends AbstractNettyHandler {
 				
 				e.printStackTrace();
 			}*/
-			// 获取返回数据
-			resp = (InvokeResult) ReflectionUtils.invokeMethod(method, bean, param);
 			
+			
+			// 获取返回数据
+			try{
+			resp = (SendResult) ReflectionUtils.invokeMethod(method, bean, param);
+			}catch(java.lang.reflect.UndeclaredThrowableException e){
+				
+				logger.error("error",e);
+				String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx,
+						new OctBaseException(e, OctBaseException.Level.I, OctErrorCode.TARGET_TRANCODE_NOT_EXIST));
+				this.send(arg0, errorMsg);
+				return ;
+			}
 			
 			 
-			logger.info("return ctx value:{}",ctx.getProviderName());
+			logger.info("return ctx value:{}",resp.getContext().getReceiveMsg());
 			
 			this.send(arg0, resp.toString());
 			
 
 		} else {
 			// 如果为空，返回前端找不到交易码错误
-
+			String errorMsg = ExceptionHandler.buildExceptionMsg(obj, ctx,
+					new OctBaseException(null, OctBaseException.Level.I, OctErrorCode.TRANCODE_NOT_EXIST));
+			this.send(arg0, errorMsg);
 			return;
 		}
 		

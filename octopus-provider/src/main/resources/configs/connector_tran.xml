@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relations>
+	<connector name="BancsConnector">
+		<tran name="2001300000106"></tran>
+	</connector>
+</relations>

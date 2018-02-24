@@ -21,6 +21,10 @@ public class OctContext  {
 	String returnMsg;//服务方返回内容
 	
 	
+	String errorCode;//错误码
+	String errorMsg;//错误信息
+	
+	
 	
 	
 	
@@ -108,7 +112,8 @@ public class OctContext  {
 	public void setInnerUUID(String innerUUID) {
 		this.innerUUID = innerUUID;
 	}
-
+	
+	
 	
 	
 	

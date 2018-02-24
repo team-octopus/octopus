@@ -22,6 +22,7 @@ import com.gdrcu.exception.OctErrorCode;
 import com.gdrcu.netty.NettyClient;
 import com.gdrcu.netty.NettyClientHandler;
 import com.gdrcu.utils.DateUtil;
+import com.gdrcu.utils.SpringContextUtil;
 
 public class TcpShortConnector implements IConnector {
 
@@ -90,9 +91,10 @@ public class TcpShortConnector implements IConnector {
 			}
 			return sbf.toString();
 		} catch (UnknownHostException e) {
-
+			logger.error("error",e);
 			throw new OctBaseException(e, Level.IV, OctErrorCode.INNER_ERROR_CODE, ip, port + "");
 		} catch (IOException e) {
+			logger.error("error",e);
 			throw new OctBaseException(e, Level.IV, OctErrorCode.INNER_ERROR_CODE, ip, port + "");
 			
 		} finally {
@@ -138,8 +140,8 @@ public class TcpShortConnector implements IConnector {
 
 	@Override
 	public void connect() throws OctBaseException {
-
-		client = new NettyClient(handler);
+		//暂不使用netty client
+		//client = new NettyClient(handler);
 
 	}
 
@@ -148,5 +150,16 @@ public class TcpShortConnector implements IConnector {
 
 		return this.name;
 	}
+
+	@Override
+	public void register() {
+		
+	}
+	public void setFactory(ConnectorFactory factory){
+		factory.connectorRegister(this);
+		
+	}
+
+	
 
 }

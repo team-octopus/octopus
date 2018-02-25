@@ -2,8 +2,8 @@ package com.octopus.consumer;
 
 import org.dom4j.DocumentException;
 
-import com.gdrcu.common.XpathMessageObject;
-import com.gdrcu.exception.OctBaseException;
+import com.xbeer.common.XpathMessageObject;
+import com.xbeer.exception.OctBaseException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

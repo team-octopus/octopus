@@ -18,9 +18,5 @@
   </listener-class>
 </listener>
 
-<!-- 开启socket服务 -->  
-<listener>  
-  <listener-class>com.gdrcu.server.adapter.ServletContextListenerStartupAdapter</listener-class>  
-</listener>  
 
 </web-app>

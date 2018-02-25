@@ -16,34 +16,34 @@ http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubb
 
 	<!-- 生成远程服务代理，可以和本地bean一样使用S2001300000205 -->
 	<dubbo:reference id="S2001300000205" check="false"
-		interface="com.gdrcu.api.service.inter.S2001300000205" />
+		interface="com.xbeer.api.service.inter.S2001300000205" />
 	<dubbo:reference id="S2001300000106" version="1.0.0"
 		group="diamond" lazy="true" loadbalance="random"
-		interface="com.gdrcu.api.service.inter.S2001300000106" />
+		interface="com.xbeer.api.service.inter.S2001300000106" />
 	<!-- 添加netty服务，提供请求方请求发送接收用 host:10980 库对于后续可能有多个，所以后续开发会以一个单独配置文件配置 -->
-	<!-- <bean id="inServer" class="com.gdrcu.consumer.netty.InServer"> <constructor-arg 
+	<!-- <bean id="inServer" class="com.xbeer.consumer.netty.InServer"> <constructor-arg 
 		value="10980" /> <constructor-arg value="GBK" /> </bean> <bean id="inServer01" 
-		class="com.gdrcu.consumer.netty.InServer01"> <constructor-arg value="10983" 
+		class="com.xbeer.consumer.netty.InServer01"> <constructor-arg value="10983" 
 		/> <constructor-arg value="GBK" /> </bean> -->
 
 	<!-- 注入获取bean的工具类 -->
-	<bean id="springContextUtil" class="com.gdrcu.utils.SpringContextUtil" />
+	<bean id="springContextUtil" class="com.xbeer.utils.SpringContextUtil" />
 
 
 
 
-	<bean id="macCheck" class="com.gdrcu.service.MacCheckService">
+	<bean id="macCheck" class="com.xbeer.service.MacCheckService">
 
 
 	</bean>
 
-	<bean id="msgParser" class="com.gdrcu.service.MessageParserService">
+	<bean id="msgParser" class="com.xbeer.service.MessageParserService">
 
 		<property name="rule" value="length:1-5,mac:6-23,body:24-{MAX}" />
 		<property name="bindService" ref="macCheck" />
 	</bean>
 
-	<bean id="octinserver" class="com.gdrcu.server.OctTcpInServer"
+	<bean id="octinserver" class="com.xbeer.server.OctTcpInServer"
 		init-method="start">
 		<constructor-arg value="test" />
 		<constructor-arg value="7989" />
